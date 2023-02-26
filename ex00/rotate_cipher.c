@@ -6,7 +6,7 @@ void	rotate(char cipher[])
 	int i = 0;
 	while (cipher[i])
 	{
-		if (cipher[i] - 15 >= 'a')
+		if (cipher[i] + 11 > 'z')
 			cipher[i] = cipher[i] - 15;
 		else
 			cipher[i] = cipher[i] + 11;
