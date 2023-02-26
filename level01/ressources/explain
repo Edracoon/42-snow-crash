@@ -1,0 +1,33 @@
+Like in the level00, I started to search in the users
+with the find -user command and looking at the /etc/passwd file.
+
+I noticed that only the flag01 password is shown (not an 'x' like other users)
+The password in the /etc/passwd file are only hashes so
+impossible to use them unless if we decrypt it.
+
+(https://askubuntu.com/questions/383057/how-to-decode-the-hash-password-in-etc-shadow)
+
+After some research (link above) I found "john" to be the best option to decrypt hashes.
+But it is impossible to use it on the VM (no rights).
+
+Installed john on macos here:
+https://download.openwall.net/pub/projects/john/contrib/macosx/
+
+I copied the /etc/passwd file in my repo and ran john in it.
+
+john ~/Desktop/snow-crash/level01/ressources/copy_passwd
+
+Gave me this output:
+
+```
+Using default input encoding: UTF-8
+Loaded 1 password hash (descrypt, traditional crypt(3) [DES 256/256 AVX2-16])
+Will run 4 OpenMP threads
+Press 'q' or Ctrl-C to abort, almost any other key for status
+abcdefg          (flag01)
+1g 0:00:00:00 DONE 2/3 (2023-02-26 20:50) 33.33g/s 567600p/s 567600c/s 567600C/s 123456..betabeta
+Use the "--show" option to display all of the cracked passwords reliably
+Session completed
+```
+
+So the password for flag01 user is "abcdefg".
