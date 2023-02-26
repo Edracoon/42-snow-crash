@@ -10,7 +10,7 @@ whole list of users in the machine.
 Using the command find with options -user I started 
 tracking every files that every users owned (man find for -user option).
 
-Everything were only directories and procs, binaries or just no permission.
+Everything were only directories, procs, binaries or just no permission.
 Except for the flag00 user where I found two files
 
 /usr/sbin/john
