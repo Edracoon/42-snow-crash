@@ -1,0 +1,33 @@
+I was analising the first level and not finding anything on
+the terminal config files that was there on the ~/ home folder.
+
+So I started checking what users where created to maybe find
+anything created by them that could be interesting
+
+With the command "cut -d: -f1 /etc/passwd", I was able to see the
+whole list of users in the machine.
+
+Using the command find with options -user I started 
+tracking every files that every users owned (man find for -user option).
+
+Everything were only directories and procs, binaries or just no permission.
+Except for the flag00 user where I found two files
+
+/usr/sbin/john
+/rofs/usr/sbin/john
+
+They outputed the same things : "cdiiddwpgswtgt"
+
+I tried the su flag00 with the password but it wasn't the answer !
+
+I suspected it to be a crypted string so using this website
+(https://www.dcode.fr/cipher-identifier) I was able to know that is
+is a rot cipher (also known as Cesar Cipher)
+So basically it's just a rotation of the alphabet.
+In this case 11 times and 15 times when it's backward (total 26).
+For exemple a 'a' is a 'p', 'b' is 'q', etc...
+
+See rotate_cipher.c:
+decrypted: "notxxxxxxxhere"
+
+Then su flag00 using the flag.
