@@ -1,0 +1,10 @@
+(https://www.solarwinds.com/resources/it-glossary/pcap#:~:text=a%20PCAP%20file%3F-,What%20is%20a%20PCAP%20file%3F,traffic%20and%20determining%20network%20status)
+
+The link above is the definition of a pcap file, what is their purpose and how
+to use them.
+
+To sum it up real quick, it is files that are made by a program, to store
+data about network trafick and packet transfer, such as packet loss,
+network congestion, network issues or security issues.
+
+Wireshark -> Open level02.pcap -> Analyze network data ...
