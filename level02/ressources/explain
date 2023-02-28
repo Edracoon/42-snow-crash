@@ -1,10 +1,87 @@
 (https://www.solarwinds.com/resources/it-glossary/pcap#:~:text=a%20PCAP%20file%3F-,What%20is%20a%20PCAP%20file%3F,traffic%20and%20determining%20network%20status)
 
-The link above is the definition of a pcap file, what is their purpose and how
-to use them.
+The link above is the definition of a pcap file, what is their purpose and how to use them.
 
 To sum it up real quick, it is files that are made by a program, to store
 data about network trafick and packet transfer, such as packet loss,
 network congestion, network issues or security issues.
 
-Wireshark -> Open level02.pcap -> Analyze network data ...
+After some researches about pcap files and how to read them,
+everyone was talking about wireshark and its ability to read and analyse pcap files.
+
+After installing, I openened my pcap file (previously copied from the VM using scp) on wireshark.
+First view I could get from the file is something like this:
+
+No.	 Time	  Source		   Destination   Len Protocol 		Info
+1    0.000000 59.233.235.218 → 59.233.235.223 74 TCP 39247 → 12121 [SYN] Seq=0 Win=14600 Len=0 MSS=1460 SACK_PERM=1 TSval=18592800 TSecr=0 WS=128
+2    0.000128 59.233.235.223 → 59.233.235.218 74 TCP 12121 → 39247 [SYN, ACK] Seq=0 Ack=1 Win=14480 Len=0 MSS=1460 SACK_PERM=1 TSval=46280417 TSecr=18592800 WS=32
+3    0.000390 59.233.235.218 → 59.233.235.223 66 TCP 39247 → 12121 [ACK] Seq=1 Ack=1 Win=14720 Len=0 TSval=18592800 TSecr=46280417
+4    0.036008 59.233.235.223 → 59.233.235.218 69 TCP 12121 → 39247 [PSH, ACK] Seq=1 Ack=1 Win=14496 Len=3 TSval=46280426 TSecr=18592800
+5    0.036255 59.233.235.218 → 59.233.235.223 66 TCP 39247 → 12121 [ACK] Seq=1 Ack=4 Win=14720 Len=0 TSval=18592804 TSecr=46280426
+6    0.036276 59.233.235.218 → 59.233.235.223 69 TCP 39247 → 12121 [PSH, ACK] Seq=1 Ack=4 Win=14720 Len=3 TSval=18592804 TSecr=46280426
+7    0.036396 59.233.235.223 → 59.233.235.218 66 TCP 12121 → 39247 [ACK] Seq=4 Ack=4 Win=14496 Len=0 TSval=46280426 TSecr=18592804
+8    0.036581 59.233.235.223 → 59.233.235.218 84 TCP 12121 → 39247 [PSH, ACK] Seq=4 Ack=4 Win=14496 Len=18 TSval=46280426 TSecr=18592804
+9    0.036698 59.233.235.218 → 59.233.235.223 84 TCP 39247 → 12121 [PSH, ACK] Seq=4 Ack=22 Win=14720 Len=18 TSval=18592804 TSecr=46280426
+10   0.036859 59.233.235.223 → 59.233.235.218 90 TCP 12121 → 39247 [PSH, ACK] Seq=22 Ack=22 Win=14496 Len=24 TSval=46280426 TSecr=18592804
+...
+...
+
+There is about 100 lines of TCP packets informations.
+In Wireshark you can see in Statistics > Conversations that all thoses packets
+come from one and only conversation between the source and the destination.
+
+You don't get that much interesting infos from this,
+expect that the packets lengths are not 0 and that there might be
+some interesting data in those packets. Let's see...
+
+By installing Wireshark, some binaries are provided and the one
+we are gonna need to extract the packets content is tshark.
+
+To see some usefull help to use tshard:
+/Applications/Wireshark.app/Contents/MacOS/tshark -h
+
+-T: is for specifying the format of the text output, in this case
+	we precise "fields".
+-e: Because we are using -Tfields we need to provide the field we want,
+	in our case "data" to get only the content of all packets.
+-r: is for the infile (level02.pcap)
+
+You can also do some fancy output format using -E<fieldsoption>=<value>
+
+So for me the command looked like this after all:
+/Applications/Wireshark.app/Contents/MacOS/tshark -Tfields -e data -r level02.pcap > packets_hexa.txt
+
+Needed to do some cleaning of \n in the output (tr -d "\n")
+/Applications/Wireshark.app/Contents/MacOS/tshark -Tfields -e data -r level02.pcap | tr -d "\n" > packets_hexa.txt
+
+Output looks like this:
+```
+fffd25fffc25fffb26fffd18fffd20fffd23fffd27fffd24fffe26fffb18fffb20fffb23fffb27fffc24fffa2001fff0fffa
+2301fff0fffa2701fff0fffa1801fff0fffa200033383430302c3338343030fff0fffa2300536f646143616e3a30fff0fffa
+270000444953504c415901536f646143616e3a30fff0fffa1800787465726dfff0fffb03fffd01fffd22fffd1ffffb05fffd
+21fffd03fffc01fffb22fffa220301000003620304020f05000007621c08020409421a0a027f0b02150f02111002131102ff
+ff1202fffffff0fffb1ffffa1f00b10031fff0fffd05fffb21fffa220103fff0fffa220107fff0fffa2103fff0fffb01fffd
+00fffe22fffd01fffb00fffc22fffa220303e20304820f07e21c08820409c21a0a827f0b82150f82111082131182ffff1282
+fffffff00d0a4c696e757820322e362e33382d382d67656e657269632d70616520283a3a666666663a31302e312e312e3229
+20287074732f3130290d0a0a010077777762756773206c6f67696e3a206c006c6500657600766500656c006c5800580d0100
+0d0a50617373776f72643a2066745f77616e64727f7f7f4e4452656c7f4c304c0d000d0a01000d0a4c6f67696e20696e636f
+72726563740d0a77777762756773206c6f67696e3a20
+```
+
+After a quick conversion from hexa to ascii (https://www.rapidtables.com/convert/number/hex-to-ascii.html)
+you get something like this:
+
+```
+ÿý%ÿü%ÿû&ÿýÿý ÿý#ÿý'ÿý$ÿþ&ÿûÿû ÿû#ÿû'ÿü$ÿú ÿðÿú#ÿðÿú'ÿðÿúÿðÿú 38400,38400ÿðÿú#SodaCan:0ÿðÿú'DISPLAYSodaCan:0ÿðÿúxtermÿðÿûÿýÿý"ÿýÿûÿý!ÿýÿüÿû"ÿú"bb	B
+ÿÿÿÿÿðÿûÿú±1ÿðÿýÿû!ÿú"ÿðÿú"ÿðÿú!ÿðÿûÿýÿþ"ÿýÿûÿü"ÿú"ââ	Â
+ÿÿÿÿÿð
+Linux 2.6.38-8-generic-pae (::ffff:10.1.1.2) (pts/10)
+
+wwwbugs login: lleevveellXX
+
+Password: ft_wandrNDRelL0L
+
+
+Login incorrect
+wwwbugs login: 
+```
