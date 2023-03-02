@@ -24,7 +24,6 @@ No.	 Time	  Source		   Destination   Len Protocol 		Info
 9    0.036698 59.233.235.218 → 59.233.235.223 84 TCP 39247 → 12121 [PSH, ACK] Seq=4 Ack=22 Win=14720 Len=18 TSval=18592804 TSecr=46280426
 10   0.036859 59.233.235.223 → 59.233.235.218 90 TCP 12121 → 39247 [PSH, ACK] Seq=22 Ack=22 Win=14496 Len=24 TSval=46280426 TSecr=18592804
 ...
-...
 
 There is about 100 lines of TCP packets informations.
 In Wireshark you can see in Statistics > Conversations that all thoses packets
@@ -71,7 +70,7 @@ fffffff00d0a4c696e757820322e362e33382d382d67656e657269632d70616520283a3a66666666
 After a quick conversion from hexa to ascii (https://www.rapidtables.com/convert/number/hex-to-ascii.html)
 you get something like this:
 
-```
+<<<
 ÿý%ÿü%ÿû&ÿýÿý ÿý#ÿý'ÿý$ÿþ&ÿûÿû ÿû#ÿû'ÿü$ÿú ÿðÿú#ÿðÿú'ÿðÿúÿðÿú 38400,38400ÿðÿú#SodaCan:0ÿðÿú'DISPLAYSodaCan:0ÿðÿúxtermÿðÿûÿýÿý"ÿýÿûÿý!ÿýÿüÿû"ÿú"bb	B
 ÿÿÿÿÿðÿûÿú±1ÿðÿýÿû!ÿú"ÿðÿú"ÿðÿú!ÿðÿûÿýÿþ"ÿýÿûÿü"ÿú"ââ	Â
 ÿÿÿÿÿð
@@ -79,9 +78,20 @@ Linux 2.6.38-8-generic-pae (::ffff:10.1.1.2) (pts/10)
 
 wwwbugs login: lleevveellXX
 
-Password: ft_wandrNDRelL0L
+Password: ft_wandrNDRelL0L
 
 
 Login incorrect
 wwwbugs login: 
-```
+>>>
+
+We now see the password and the fact that the person
+that entered it pressed multiples times the backspace key
+(only visible in vs code because that's invisible ascii chars)
+
+But it goes like this if we want to visualize it :
+Password: ft_wandr[DEL][DEL][DEL]NDRel[DEL]L0L
+
+So we get the final password:
+
+ft_waNDReL0L
