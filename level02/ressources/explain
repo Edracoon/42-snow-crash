@@ -87,7 +87,7 @@ wwwbugs login:
 
 We now see the password and the fact that the person
 that entered it pressed multiples times the backspace key
-(only visible in vs code because that's invisible ascii chars)
+(not visible expect on vscode because that's invisible ascii chars)
 
 But it goes like this if we want to visualize it :
 Password: ft_wandr[DEL][DEL][DEL]NDRel[DEL]L0L
