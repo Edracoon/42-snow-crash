@@ -1,21 +1,31 @@
+```
+-r-x------ 1 level03 level03  220 Apr  3  2012 .bash_logout*
+-r-x------ 1 level03 level03 3518 Aug 30  2015 .bashrc*
+-rwsr-sr-x 1 flag03  level03 8627 Mar  5  2016 level03*
+-r-x------ 1 level03 level03  675 Apr  3  2012 .profile*
+```
+
 Here we have a binary called level03, we can see that it is the only file
 that has the rights of flag03 user.
 
 There is multiple way to analyze and exploit a binary, for exemple the
-buffer overflow method. Here this method would not work because 
+buffer overflow method. Here, this method would not work because 
 the program doesn't prompt the user so it will be useless.
 
 To analyze a binary we can use several commands, for exemples :
-- file: isplays the type of file, including the file format, architecture, and byte order.
-- objdump -x -s: displays information about the binary file, including the file headers, sections, symbols, and disassembled machine code
-- strings: This command displays printable strings in the binary file.
+- file: displays the type of file, the file format, architecture, and byte order.
+- objdump -x -s: displays infos like the file headers, sections, symbols, and disassembled machine code
+- strings: displays printable strings in the binary file.
 
 When we execute the program, it only display "Exploit me"
 
 Here the strings commands show use this line:
-"/usr/bin/env echo Exploit me"
+~$ strings level03
+...
+/usr/bin/env echo Exploit me
+...
 
-It is actually the moment where "Exploit me" is printed,
+It's the moment where "Exploit me" is printed in the program,
 but it is actually done using the echo shell command,
 maybe using system() function.
 
@@ -24,10 +34,12 @@ https://failingsilently.wordpress.com/2017/09/08/exploiting-calls-to-system/
 Thanks to this article I understood how to exploit binaries that calls
 the system function.
 
-It is done by placing our executable that is called the same as the program calls it,
+It is done by creating an executable that is called the same as the program calls in system(),
 in our case "echo" and placing its path on the PATH env variable.
 
-So that it find our executable before the real one.
+So that it finds our executable before the real one.
+
+Exemple:
 
 Imagine this PATH variable: "/usr/local/bin:/usr/bin:/bin"
 
@@ -38,7 +50,7 @@ So first in the /usr/local/bin folder, then in the /usr/bin folder, etc...
 Now if we add a folder like "/tmp" in front of the PATH variable, it will
 search in the /tmp folder before the /bin folder where the real echo is present.
 
-And we just have to create our own echo program that does whatever we want to execute.
+And we just have to create our own echo program that does whatever we want.
 The funny part is that, as we saw before, the level03 program has the flag03 rights ;)
 
 So if we could run the getflag command through level03, we could get the flag!
