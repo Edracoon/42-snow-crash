@@ -69,5 +69,6 @@ int	main(void)
 
 - Then execute level03
 
+~$ cd ~
 ~$ ./level03
 Check flag.Here is your token : qi0maab88jeaj46qoumi7maus
