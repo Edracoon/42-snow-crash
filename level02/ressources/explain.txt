@@ -10,6 +10,7 @@ After some researches about pcap files and how to read them,
 everyone was talking about wireshark and its ability to read and analyse pcap files.
 
 After installing, I openened my pcap file (previously copied from the VM using scp) on wireshark.
+~$ scp -P 4242 level02@xx.xx.xxx.xx:~/level02.pcap .
 First view I could get from the file is something like this:
 
 No.	 Time	  Source		   Destination   Len Protocol 		Info
