@@ -36,6 +36,8 @@ some interesting data in those packets. Let's see...
 By installing Wireshark, some binaries are provided and the one
 we are gonna need to extract the packets content is tshark.
 
+https://serverfault.com/questions/150167/how-do-i-convert-wireshark-capture-files-to-text-files
+
 To see some usefull help to use tshard:
 /Applications/Wireshark.app/Contents/MacOS/tshark -h
 
