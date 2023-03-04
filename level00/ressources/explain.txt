@@ -30,4 +30,4 @@ For exemple 'a' become 'p', 'b' become 'q', etc...
 See rotate_cipher.c:
 decrypted: "nottoohardhere"
 
-Then su flag00 using the flag.
+Then su flag00 using the password "nottoohardhere"
