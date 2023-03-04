@@ -1,0 +1,41 @@
+```
+-r-x------ 1 level04 level04  220 Apr  3  2012 .bash_logout*
+-r-x------ 1 level04 level04 3518 Aug 30  2015 .bashrc*
+-rwsr-sr-x 1 flag04  level04  152 Mar  5  2016 level04.pl*
+-r-x------ 1 level04 level04  675 Apr  3  2012 .profile*
+```
+
+Here we have a Perl script named level04.pl,
+we can see that it has the flag04 rights.
+
+After some research in Perl doc it seems that this script provides
+a simple web interface to execute shell commands on the server.
+When the script is executed, it listens on port 4747 and accepts HTTP requests.
+
+The script uses the Perl CGI module to parse incoming
+HTTP requests and extract the value of the "x" parameter.
+
+The script then defines a subroutine named "x" that takes one argument.
+The "x" subroutine assigns the value of the argument to a variable named "$y".
+The subroutine then executes the command specified by the "$y" variable
+using the backtick operator (``), which runs the command in a subshell
+and captures its output using the redirection "2>&1".
+The output of the command is printed to the HTTP response, which is sent back to the client.
+
+So it actually represent a huge security problem since any client could send any command as x 
+and the server could execute the command as the flag04 user and give the output.
+
+We can make requests to this server using this url "http://localhost:4747/?x=<command>"
+because the server listen on port 4747.
+
+To simulate a client we could use curl like this :
+
+curl "http://localhost:4747/?x=\`ls\`"
+
+This request would execute ls in the server.
+
+As we saw before, the script is owned and lauched by flag04 user,
+so we have the rights to pass getflag as x :
+
+~$ curl "http://localhost:4747/?x=\`getflag\`"
+Check flag.Here is your token : ne2searoevaevoem4ov4ar8ap
