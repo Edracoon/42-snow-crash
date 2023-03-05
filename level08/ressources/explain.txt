@@ -51,7 +51,7 @@ if (filename == "token")
 
 Let's try it out.
 
-- First get rights on ~/ directory just like level06
+- First get rights on ~/ directory just like we did on level06
 
 ~$ setfacl -b ~/
 ~$ chmod 777 ~/
