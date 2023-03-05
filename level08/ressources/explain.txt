@@ -64,3 +64,9 @@ Let's try it out.
 
 ~$ ./level08 test
 quif5eloekouj29ke0vouxean
+
+~$ su flag08
+Password: quif5eloekouj29ke0vouxean
+
+~$ getflag
+Check flag.Here is your token : 25749xKZ8L7DkSCwJkT9dyv6f
