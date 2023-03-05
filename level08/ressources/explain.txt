@@ -44,12 +44,13 @@ if (token)
 It is weird because it was not caused by a rights issue since
 level08 can read any file with this kind of rights.
 
-It is possible that the if statement is hardcoded like this:
+It is possible that the if statement is hardcoded
+like this since there is a string "token" in the strings command:
 
 if (filename == "token")
 	...
 
-Let's try it out.
+Let's try to rename the token file to test if we are right.
 
 - First get rights on ~/ directory just like we did on level06
 
