@@ -1,0 +1,66 @@
+~$ ll
+drwxrwxrwx  1 level08 level08  160 Mar  5 16:43 ./
+d--x--x--x  1 root    users    340 Aug 30  2015 ../
+-r-x------  1 level08 level08  220 Apr  3  2012 .bash_logout*
+-r-x------  1 level08 level08 3518 Aug 30  2015 .bashrc*
+-rwsr-s---+ 1 flag08  level08 8617 Mar  5  2016 level08*
+-r-x------  1 level08 level08  675 Apr  3  2012 .profile*
+-rw-------  1 flag08  flag08    26 Mar  5  2016 token
+
+This time there is two things :
+- token, simple text file (no permissions to read or write)
+- level08, binary
+
+Let's see what's inside level08 binary
+
+~$ strings level08
+...
+%s [file to read]
+token
+You may not access '%s'
+Unable to open %s
+Unable to read fd %d
+...
+
+By testing level08, it seems that it can read any file and outputs its content.
+
+My first thought was to pass token to level08 and let it read it for us.
+
+~$ ./level08 token
+You may not access 'token'
+
+As we saw before in the strings command, we have in this order
+```
+token
+You may not access '%s'
+```
+
+We can think that when we open the token file, it goes in a if statement like that
+
+if (token)
+	output "You may not access 'token';
+	return;
+
+It is weird because it was not caused by a rights issue since
+level08 can read any file with this kind of rights.
+
+It is possible that the if statement is hardcoded like this:
+
+if (filename == "token")
+	...
+
+Let's try it out.
+
+- First get rights on ~/ directory just like level06
+
+~$ setfacl -b ~/
+~$ chmod 777 ~/
+
+- Then rename token file
+
+~$ mv token test
+
+- Try to execute level08 again but this time with "token" as "test"
+
+~$ ./level08 test
+quif5eloekouj29ke0vouxean
