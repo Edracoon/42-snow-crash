@@ -1,0 +1,94 @@
+~$ ll
+total 24
+drwxrwxrwx 1 level09 level09  140 Mar  5 19:09 ./
+d--x--x--x 1 root    users    340 Aug 30  2015 ../
+-r-x------ 1 level09 level09  220 Apr  3  2012 .bash_logout*
+-r-x------ 1 level09 level09 3518 Aug 30  2015 .bashrc*
+-rwsr-sr-x 1 flag09  level09 7640 Mar  5  2016 level09*
+-r-x------ 1 level09 level09  675 Apr  3  2012 .profile*
+----r--r-- 1 flag09  level09   26 Mar  5  2016 token
+
+As usual when we have an binary
+
+~$ strings level09
+...
+You should not reverse this
+LD_PRELOAD
+Injection Linked lib detected exit..
+/etc/ld.so.preload
+/proc/self/maps
+/proc/self/maps is unaccessible, probably a LD_PRELOAD attempt exit..
+libc
+You need to provied only one arg.
+00000000 00:00 0
+LD_PRELOAD detected through memory maps exit ...
+...
+
+It seems that we shouldn't reverse it this time.
+Let's see what the program do.
+
+~$ ./level09
+You need to provied only one arg.
+
+~$ ./level09 11111111
+12345678
+
+It seems that it adds the index to the ascii value of each character of the argument.
+
+./level09 aaaaaaaaaaaaaaaaaaaaaaaaaa
+abcdefghijklmnopqrstuvwxyz
+
+We also have a token file that is provided.
+
+~$ cat token
+f4kmm6p|=�p�n��DB�Du{��
+
+There is some non printable characters.
+
+My first thought here was to pass the token into the level09 program to decrypt it.
+
+~$ export test=$(cat token)
+~$ ./level09 $test
+f5mpq;v�E��{�{��TS�W�����
+
+But it gave us a bad result with even more non printable characters.
+
+But it seems that the content in the token file was previously
+the token that has been encrypted by the level09 binary.
+
+Let's try to decrypt it by making the exact opposite of level09 program.
+So instead of adding the value of the index to the current char,
+we are going to subtract the value of the index to the current char:
+
+~$ touch decrypt.c
+~$ vim decrypt.c
+```
+#include <stdio.h>
+#include <string.h>
+
+int	main(int ac, char **av)
+{
+	if (ac < 2)
+		return (0);
+
+	int i = 0;
+	while (i < strlen(av[1]))
+		av[1][i] -= i++;	// Substract the the value of the index to the current char
+
+	printf("token: \'%s\'\n", av[1]);
+	return (0);
+}
+```
+~$ gcc decrypt.c -o decrypt
+
+- Run it by passing our env variable $test
+  (previously obtained with `export test=$(cat ~/token)`)
+
+~$ ./decrypt $test
+token: 'f3iji1ju5yuevaus41q1afiuq'
+
+~$ su flag09
+password: f3iji1ju5yuevaus41q1afiuq
+
+~$ getflag
+Check flag.Here is your token : s5cAJpM8ev6XHw998pRWG728z
