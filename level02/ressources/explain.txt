@@ -7,7 +7,7 @@ data about network trafick and packet transfer, such as packet loss,
 network congestion, network issues or security issues.
 
 After some researches about pcap files and how to read them,
-everyone was talking about wireshark and its ability to read and analyse pcap files.
+everyone on the internet was talking about wireshark and its ability to read and analyse pcap files.
 
 ~$ scp -P 4242 level02@xx.xx.xxx.xx:~/level02.pcap .
 
@@ -40,7 +40,7 @@ we are gonna need to extract the packets content is tshark.
 
 https://serverfault.com/questions/150167/how-do-i-convert-wireshark-capture-files-to-text-files
 
-To see some usefull help to use tshard:
+To see some usefull help to use tshark:
 /Applications/Wireshark.app/Contents/MacOS/tshark -h
 
 -T: is for specifying the format of the text output, in this case
@@ -96,6 +96,10 @@ that entered it pressed multiples times the backspace key
 But it goes like this if we want to visualize it :
 Password: ft_wandr[DEL][DEL][DEL]NDRel[DEL]L0L
 
-So we get the final password:
+So we get the final password by deleting chars just like he did
+when he was entering the password:
 
 ft_waNDReL0L
+
+~$ su flag02
+password: ft_waNDReL0L
