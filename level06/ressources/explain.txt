@@ -61,7 +61,6 @@ Let's replace the script with our own php script.
 
 
 ~$ setfacl -b .
-This command removes all extended ACL entries from the current directory.
 The -b option in the setfacl command stands for "remove all extended ACL entries."
 This can be useful if you want to reset the permissions on a directory and start fresh.
 
