@@ -1,4 +1,4 @@
-# 42 Snow Crash Tutorial
+# 42 Snow Crash
 ## Introduction to cybersecurity
-## To follow step by step this tutorial, use level0X/ressources/explain.txt
+## To follow step by step the project, use level0X/ressources/explain.txt
 ## Enjoy !
